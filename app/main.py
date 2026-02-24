@@ -10,6 +10,7 @@ from fastapi import Depends
 from app.models import task
 from app.routers import tasks
 from app.routers import ai
+from app.core.logging_middleware import log_requests
 
 
 app = FastAPI(
@@ -17,6 +18,7 @@ app = FastAPI(
     version="0.1.0",
     description="Internal sprint tracking tool for AI consultancy"
 )
+app.middleware("http")(log_requests)
 app.include_router(auth.router)
 app.include_router(tasks.router)
 app.include_router(ai.router)

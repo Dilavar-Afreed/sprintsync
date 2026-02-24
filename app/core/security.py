@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.db.session import SessionLocal
 from app.models.user import User
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
+from fastapi import Request
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
@@ -46,6 +46,7 @@ def get_db():
 
 
 def get_current_user(
+    request: Request,
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db),
 ):
@@ -54,19 +55,14 @@ def get_current_user(
     payload = verify_access_token(token)
 
     if payload is None:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid or expired token",
-        )
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     user_id = payload.get("sub")
 
     user = db.query(User).filter(User.id == int(user_id)).first()
 
     if user is None:
-        raise HTTPException(
-            status_code=401,
-            detail="User not found",
-        )
+        raise HTTPException(status_code=401, detail="User not found")
 
+    request.state.user = user
     return user
