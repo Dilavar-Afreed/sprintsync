@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.sql import func
 from app.db.session import Base
-
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "users"
@@ -11,3 +11,4 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    tasks = relationship("Task", back_populates="owner", cascade="all, delete")

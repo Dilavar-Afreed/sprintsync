@@ -7,6 +7,8 @@ from app.routers import auth
 from app.core.security import get_current_user
 from app.models.user import User
 from fastapi import Depends
+from app.models import task
+from app.routers import tasks
 
 
 app = FastAPI(
@@ -15,6 +17,7 @@ app = FastAPI(
     description="Internal sprint tracking tool for AI consultancy"
 )
 app.include_router(auth.router)
+app.include_router(tasks.router)
 
 
 @app.on_event("startup")
