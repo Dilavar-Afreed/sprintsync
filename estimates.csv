@@ -1,11 +1,1 @@
-Task,Estimated Hours,Actual Hours
-Project Planning,1,
-Poetry Setup & Skeleton,2,
-Database & Models,3,
-Auth (bcrypt + JWT),2,
-Task CRUD,2,
-AI Endpoint,2,
-Observability,2,
-Testing,2,
-Docker & Deployment,2,
-Documentation & Video,2,
+Story,Task,Estimate min (hr),Estimate max (hr),Actual,Comment
