@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from app.db.session import engine
 from sqlalchemy import text
+from app.db.session import Base
+from app.models import user  # Important import
+
 
 app = FastAPI(
     title="SprintSync API",
@@ -10,10 +13,15 @@ app = FastAPI(
 
 
 @app.on_event("startup")
-def test_db_connection():
+def startup():
+    # Test connection
     with engine.connect() as connection:
         connection.execute(text("SELECT 1"))
     print("Database connected successfully ✅")
+
+    # Create tables
+    Base.metadata.create_all(bind=engine)
+    print("Tables created successfully ✅")
 
 
 @app.get("/health")
