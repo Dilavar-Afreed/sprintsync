@@ -9,6 +9,7 @@ from app.models.user import User
 from fastapi import Depends
 from app.models import task
 from app.routers import tasks
+from app.routers import ai
 
 
 app = FastAPI(
@@ -18,6 +19,7 @@ app = FastAPI(
 )
 app.include_router(auth.router)
 app.include_router(tasks.router)
+app.include_router(ai.router)
 
 
 @app.on_event("startup")
