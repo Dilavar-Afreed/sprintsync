@@ -4,6 +4,9 @@ from sqlalchemy import text
 from app.db.session import Base
 from app.models import user  # Important import
 from app.routers import auth
+from app.core.security import get_current_user
+from app.models.user import User
+from fastapi import Depends
 
 
 app = FastAPI(
@@ -29,3 +32,11 @@ def startup():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
+@app.get("/me")
+def read_current_user(current_user: User = Depends(get_current_user)):
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "is_admin": current_user.is_admin,
+    }
