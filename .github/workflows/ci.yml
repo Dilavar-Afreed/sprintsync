@@ -49,7 +49,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql-client
           PGPASSWORD=sprintpass psql -h localhost -U sprintuser -d sprintsync -c "CREATE EXTENSION IF NOT EXISTS vector;"
-
+      
+      - name: Create database tables
+        run: |
+          poetry run python -c "from app.db.session import engine, Base; import app.models.user; import app.models.task; Base.metadata.create_all(bind=engine)"
+     
       - name: Run tests
         run: poetry run pytest
 
