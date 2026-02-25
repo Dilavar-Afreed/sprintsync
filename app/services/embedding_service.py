@@ -1,14 +1,16 @@
 import os
 from openai import OpenAI
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI()
 
-EMBEDDING_MODEL = "text-embedding-3-small"
+def get_embedding(text: str):
+    # If running in CI or tests, return fake embedding
+    if os.getenv("OPENAI_API_KEY") == "dummy-key-for-ci":
+        return [0.0] * 1536
 
-
-def get_embedding(text: str) -> list[float]:
     response = client.embeddings.create(
-        model=EMBEDDING_MODEL,
-        input=text
+        model="text-embedding-3-small",
+        input=text,
     )
+
     return response.data[0].embedding
