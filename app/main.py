@@ -12,7 +12,7 @@ from app.routers import tasks
 from app.routers import ai
 from app.core.logging_middleware import log_requests
 from app.routers import metrics
-
+from app.routers import stats
 
 app = FastAPI(
     title="SprintSync API",
@@ -24,6 +24,7 @@ app.include_router(auth.router)
 app.include_router(tasks.router)
 app.include_router(ai.router)
 app.include_router(metrics.router)
+app.include_router(stats.router)
 
 
 @app.on_event("startup")
