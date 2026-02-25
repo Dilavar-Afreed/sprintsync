@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: sprintsync-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: sprintuser
+      POSTGRES_PASSWORD: sprintpass
+      POSTGRES_DB: sprintsync
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: sprintsync-app
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://sprintuser:sprintpass@db:5432/sprintsync
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:
