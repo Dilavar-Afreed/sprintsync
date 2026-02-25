@@ -36,24 +36,33 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install Poetry
         run: pip install poetry
 
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root
+        run: poetry install --no-interaction
 
-      - name: Enable pgvector extension
+      - name: Install PostgreSQL client
         run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-client
-          PGPASSWORD=sprintpass psql -h localhost -U sprintuser -d sprintsync -c "CREATE EXTENSION IF NOT EXISTS vector;"
-      
-      - name: Create database tables
+
+      - name: Wait for PostgreSQL
         run: |
-          poetry run python -c "from app.db.session import engine, Base; import app.models.user; import app.models.task; Base.metadata.create_all(bind=engine)"
-     
+          until pg_isready -h localhost -U sprintuser; do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
+
+      - name: Enable pgvector extension
+        run: |
+          PGPASSWORD=sprintpass psql -h localhost -U sprintuser -d sprintsync -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
+      - name: Run Alembic migrations
+        run: poetry run alembic upgrade head
+
       - name: Run tests
         run: poetry run pytest
 
