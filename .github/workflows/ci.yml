@@ -61,7 +61,9 @@ jobs:
           PGPASSWORD=sprintpass psql -h localhost -U sprintuser -d sprintsync -c "CREATE EXTENSION IF NOT EXISTS vector;"
 
       - name: Run Alembic migrations
-        run: poetry run alembic upgrade head
+        run: |
+          poetry run alembic upgrade head
+          poetry run python -c "from app.db.session import engine; import app.models.user, app.models.task; from app.db.session import Base; Base.metadata.create_all(bind=engine)"
 
       - name: Run tests
         run: poetry run pytest
