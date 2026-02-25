@@ -4,7 +4,7 @@ from pydantic import BaseModel, EmailStr
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
-
+    resume_text: str | None = None
 
 class UserResponse(BaseModel):
     id: int

@@ -9,7 +9,8 @@ class TaskBase(BaseModel):
 
 
 class TaskCreate(TaskBase):
-    pass
+    status: str = "TODO"
+    total_minutes: int = 0
 
 
 class TaskUpdate(BaseModel):

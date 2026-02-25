@@ -6,6 +6,7 @@ from app.schemas.user import UserCreate, UserResponse
 from app.core.security import hash_password
 from app.schemas.user import UserLogin, Token
 from app.core.security import verify_password, create_access_token
+from app.services.embedding_service import get_embedding
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -20,17 +21,19 @@ def get_db():
 
 @router.post("/register", response_model=UserResponse)
 def register(user: UserCreate, db: Session = Depends(get_db)):
-    # Check if email already exists
     existing_user = db.query(User).filter(User.email == user.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    # Create new user
     new_user = User(
         email=user.email,
         hashed_password=hash_password(user.password),
         is_admin=False,
+        resume_text=user.resume_text
     )
+
+    if user.resume_text:
+        new_user.resume_embedding = get_embedding(user.resume_text)
 
     db.add(new_user)
     db.commit()

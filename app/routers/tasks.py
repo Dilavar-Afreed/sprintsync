@@ -12,6 +12,9 @@ from app.schemas.task import (
     TaskStatusUpdate,
 )
 from app.core.security import get_current_user
+from app.services.embedding_service import get_embedding
+from sqlalchemy import func
+from app.models.user import User
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
@@ -27,16 +30,30 @@ def get_db():
 
 # 🟢 Create Task
 @router.post("/", response_model=TaskResponse)
-def create_task(
-    task: TaskCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
+def create_task(task: TaskCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+
     new_task = Task(
         title=task.title,
         description=task.description,
-        user_id=current_user.id,
+        status=task.status,
+        total_minutes=task.total_minutes,
+        user_id=current_user.id
     )
+
+    if task.description:
+        new_task.embedding = get_embedding(task.description)
+
+        best_user = (
+            db.query(User)
+            .filter(User.resume_embedding != None)
+            .order_by(
+                User.resume_embedding.cosine_distance(new_task.embedding)
+            )
+            .first()
+        )
+
+        if best_user:
+            new_task.assigned_user_id = best_user.id
 
     db.add(new_task)
     db.commit()

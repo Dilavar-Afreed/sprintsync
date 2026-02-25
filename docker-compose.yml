@@ -1,8 +1,6 @@
-version: "3.9"
-
 services:
   db:
-    image: postgres:16
+    image: ankane/pgvector
     container_name: sprintsync-postgres
     restart: always
     environment:
@@ -22,6 +20,7 @@ services:
       - db
     environment:
       DATABASE_URL: postgresql://sprintuser:sprintpass@db:5432/sprintsync
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
     ports:
       - "8000:8000"
 
