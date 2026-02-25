@@ -1,0 +1,57 @@
+name: SprintSync CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: ankane/pgvector
+        env:
+          POSTGRES_USER: sprintuser
+          POSTGRES_PASSWORD: sprintpass
+          POSTGRES_DB: sprintsync
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U sprintuser"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DATABASE_URL: postgresql://sprintuser:sprintpass@localhost:5432/sprintsync
+      OPENAI_API_KEY: dummy-key-for-ci
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Enable pgvector extension
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          PGPASSWORD=sprintpass psql -h localhost -U sprintuser -d sprintsync -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
+      - name: Run tests
+        run: poetry run pytest
+
+      - name: Build Docker image
+        run: docker build -t sprintsync .
