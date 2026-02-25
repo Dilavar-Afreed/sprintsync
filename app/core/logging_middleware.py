@@ -3,7 +3,7 @@ import json
 import logging
 import traceback
 from fastapi import Request
-
+from app.core.metrics import metrics
 
 logger = logging.getLogger("sprintsync")
 logging.basicConfig(level=logging.INFO)
@@ -15,6 +15,7 @@ async def log_requests(request: Request, call_next):
     try:
         response = await call_next(request)
         latency = round((time.time() - start_time) * 1000, 2)
+        metrics.record_request(request.url.path, latency, response.status_code)
 
         user_id = None
         if hasattr(request.state, "user"):
