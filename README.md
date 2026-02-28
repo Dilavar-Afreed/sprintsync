@@ -158,26 +158,11 @@ cd sprintsync
 Using Poetry (recommended):
 
 ```bash
-# Install dependencies
+# install / sync dependencies
 poetry install
 
-# This creates a virtual environment and installs all packages from pyproject.toml
-```
-
-Or using pip with venv:
-
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
+# this creates/uses the virtual environment defined by Poetry
+# and installs everything from [pyproject.toml](http://_vscodecontentref_/0)
 ```
 
 ### Step 3: Configure Environment Variables
@@ -978,7 +963,12 @@ Regular health checks available at `/health` endpoint.
 
 ## 📝 License
 
-This project is proprietary and intended for internal use at [Your Organization]. Unauthorized copying, distribution, or use is prohibited.
+This repository contains a **sample/prototype implementation** of SprintSync.  
+It is provided for demonstration and internal evaluation only; no commercial
+use, redistribution or modification is permitted without express authorization
+from the owning organisation.  Consult your team’s licensing policy for
+details.
+
 
 ## 🎓 Version History
 
