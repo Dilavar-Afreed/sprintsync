@@ -978,6 +978,4 @@ details.
 
 ---
 
-**SprintSync** | Built with ❤️ for intelligent team collaboration
 
-For the latest information and updates, visit the project repository or contact the development team.
