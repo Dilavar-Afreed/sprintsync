@@ -17,8 +17,7 @@ An intelligent sprint tracking and task management platform powered by AI-driven
 - [Database Migrations](#database-migrations)
 - [Docker Deployment](#docker-deployment)
 - [Architecture](#architecture)
-- [Contributing](#contributing)
-- [Support](#support)
+
 
 ## 🎯 Overview
 
@@ -231,6 +230,14 @@ poetry run alembic upgrade head
 ```
 
 This initializes all database tables and schemas required by the application.
+
+> **Demo data:**
+> When using the Docker setup (or running the seed script manually), the database will be pre-populated with two users and two tasks. You can log in using the following credentials:
+>
+> - **Admin**: `admin@sprintsync.com` / `admin123`
+> - **User**: `user1@sprintsync.com` / `password123`
+>
+> These accounts are provided for testing purposes only and are recreated whenever the seed script runs on an empty database. Change or remove them in production deployments.
 
 ### Step 7: Verify Installation
 
@@ -813,91 +820,7 @@ docker-compose build --no-cache
 - Pydantic validation
 - Exception handling
 
-## 🤝 Contributing
 
-### Development Workflow
-
-1. **Create a Feature Branch**:
-
-```bash
-git checkout -b feature/your-feature-name
-```
-
-2. **Make Changes**:
-   - Follow PEP 8 style guidelines
-   - Write tests for new features
-   - Update documentation
-
-3. **Run Tests and Linting**:
-
-```bash
-poetry run pytest
-poetry run black app/
-poetry run isort app/
-```
-
-4. **Commit Changes**:
-
-```bash
-git commit -m "feat: Add your feature description"
-```
-
-5. **Push to Remote**:
-
-```bash
-git push origin feature/your-feature-name
-```
-
-6. **Create Pull Request**:
-   - Provide clear description
-   - Link related issues
-   - Ensure all tests pass
-
-### Code Style
-
-- **Python**: PEP 8 with Black formatter
-- **Line Length**: 88 characters
-- **Imports**: Sorted with isort
-- **Type Hints**: Required for all functions
-
-### Testing Requirements
-
-- Minimum 80% code coverage
-- All tests must pass
-- New features must include tests
-- Integration tests for API endpoints
-
-### Documentation
-
-- Update README.md for user-facing changes
-- Add docstrings to all functions
-- Document API changes in OpenAPI schema
-
-## 📞 Support
-
-### Getting Help
-
-- **Documentation**: See README and inline code comments
-- **Issues**: Create an issue on GitHub for bugs
-- **Discussions**: Use GitHub Discussions for questions
-- **Email**: support@sprintsync.dev
-
-### Troubleshooting
-
-#### PostgreSQL Connection Issues
-
-```bash
-# Check PostgreSQL is running
-psql -U postgres -c "SELECT version();"
-
-# Check database exists
-psql -U sprintuser -d sprintsync -c "\dt"
-```
-
-#### Docker Issues
-
-```bash
-# Check Docker service
 docker --version
 
 # View container logs
