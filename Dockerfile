@@ -6,6 +6,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
@@ -23,6 +24,10 @@ RUN poetry install --only main --no-root --no-interaction --no-ansi
 # Copy the rest of the code
 COPY . /app
 
+# Copy entrypoint and make executable
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["/app/entrypoint.sh"]
